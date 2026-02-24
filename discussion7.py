@@ -33,21 +33,20 @@ def load_listings(f):
     # TODO: Read the CSV using csv.reader and convert it to a list a dictionaries
     listings = []
 
-    f = open('new_york_listings_2024.csv')
-    csv_f = csv.reader(f)
+    with open(full_path, encoding="utf-8") as f:
+        csv_f = csv.reader(f)
 
-    header = next(csv_f)
-    for row in csv_f:
-        record = {}
-        i = 0
-        while i < len(header):
-            record[header[i]] = row[i]
-            i += 1
-        listings.append(record)
+        header = next(csv_f)
 
-    f.close()
+        for row in csv_f:
+            record = {}
+            i = 0
+            while i < len(header):
+                record[header[i]] = row[i]
+                i += 1
+            listings.append(record)
 
-    return listings
+        return listings
 
     # pass
 
@@ -69,10 +68,32 @@ def calculate_avg_price_by_neighbourhood_group_and_room(listings):
         dict mapping (neighbourhood_group, room_type) -> average_price (float)
         e.g. { ('Downtown', 'Entire home/apt'): 123.45, ... }
     """
-    pass
 
+    totals = {}
+    counts = {}
 
+    for listing in listings: 
+        group = listings['neighbourhood_group']
+        room = listings['room_type']
+        price = float(listing['price'])
 
+        key = (room, group)
+
+        if key not in totals:
+            totals[key] = 0
+            counts[key] = 0
+        
+        totals[key] += price
+        counts[key] += 1
+
+    averages = {}
+
+    for key in totals:
+        averages[key] = totals[key] / counts [key]
+
+    return averages   
+ 
+    # pass
 ###############################################################################
 ##### TASK 3: CSV WRITER
 ###############################################################################
